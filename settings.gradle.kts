@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Test App"
-include(":app")
+rootProject.name = "Ezecab"
+include(":ezecab")

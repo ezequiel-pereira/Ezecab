@@ -1,4 +1,4 @@
-package com.ezedev.app;
+package com.ezedev.ezecab;
 
 import org.junit.Test;
 

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ezedev.app"
+    namespace = "com.ezedev.ezecab"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.ezedev.app"
+        applicationId = "com.ezedev.ezecab"
         minSdk = 21
         targetSdk = 33
         versionCode = 1

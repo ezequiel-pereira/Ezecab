@@ -1,9 +1,11 @@
-package com.ezedev.app;
+package com.ezedev.ezecab;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+
+import com.ezedev.ezecab.R;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
