@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "207885232296",
+    "project_id": "ezecab-dd6c2",
+    "storage_bucket": "ezecab-dd6c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207885232296:android:e6d1504de412c2de457a9d",
+        "android_client_info": {
+          "package_name": "com.ezedev.ezecab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjOQSysuWzl8eNv7XDLj2_wKyTgkVhJRI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
