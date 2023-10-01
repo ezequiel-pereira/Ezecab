@@ -3,13 +3,17 @@ package com.ezedev.ezecab;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.ezedev.ezecab.R;
+import android.view.View;
+import android.widget.Button;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
+    Button mButtonGoToLogin;
+    Button mButtonGoToRegister;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +24,18 @@ public class LoginRegisterActivity extends AppCompatActivity {
         //No title
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mButtonGoToLogin = findViewById(R.id.btnGoToLogin);
+        mButtonGoToLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToLogin();
+            }
+        });
+    }
+
+    private void goToLogin() {
+        Intent intent = new Intent(LoginRegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 }

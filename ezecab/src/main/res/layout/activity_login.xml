@@ -6,11 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <include layout="@layout/action_bar_toolbar" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:orientation="vertical"
-        android:layout_margin="30dp">
+        android:gravity="center">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -18,6 +22,7 @@
             android:layout_marginBottom="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Correo electrónico"
@@ -32,28 +37,22 @@
             android:layout_marginBottom="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Contraseña"
-                android:inputType="textPassword">
+                android:inputType="textPassword"
+                android:layout_marginBottom="10dp">
 
             </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="bottom">
-
-            <Button
+        <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
-                android:backgroundTint="@color/colorPrimary"/>
-
-        </LinearLayout>
-
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Login" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
