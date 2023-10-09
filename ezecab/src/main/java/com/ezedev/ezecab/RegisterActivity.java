@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ezedev.ezecab.includes.MyToolbar;
 import com.ezedev.ezecab.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,6 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
         mTextInputEmail = findViewById(R.id.textInputEmail);
         mTextInputPassword = findViewById(R.id.textInputPassword);
         mButtonRegister = findViewById(R.id.btnRegister);
+
+        MyToolbar.show(this, "Regsitro de usuario", true);
 
         mPref = getApplicationContext().getSharedPreferences("userType", MODE_PRIVATE);
         String userType = mPref.getString("user", "");
