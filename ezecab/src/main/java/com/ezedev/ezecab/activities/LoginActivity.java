@@ -1,4 +1,4 @@
-package com.ezedev.ezecab;
+package com.ezedev.ezecab.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ezedev.ezecab.R;
 import com.ezedev.ezecab.includes.MyToolbar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

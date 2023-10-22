@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:fitsSystemWindows="true"
-    tools:context=".LoginRegisterActivity">
+    tools:context=".activities.LoginRegisterActivity">
 
     <include layout="@layout/action_bar_toolbar" />
 

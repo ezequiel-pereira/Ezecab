@@ -1,4 +1,4 @@
-package com.ezedev.ezecab;
+package com.ezedev.ezecab.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,11 +9,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.ezedev.ezecab.R;
+import com.ezedev.ezecab.activities.driver.RegisterDriverActivity;
+import com.ezedev.ezecab.activities.passenger.RegisterActivity;
+
 public class LoginRegisterActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     Button mButtonGoToLogin;
     Button mButtonGoToRegister;
+    SharedPreferences mPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 goToRegister();
             }
         });
+
+        mPref = getApplicationContext().getSharedPreferences("userType", MODE_PRIVATE);
     }
 
     private void goToLogin() {
@@ -50,7 +57,14 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     private void goToRegister() {
-        Intent intent = new Intent(LoginRegisterActivity.this, RegisterActivity.class);
-        startActivity(intent);
+        String userType = mPref.getString("userType", "");
+
+        if (userType.equals("client")) {
+            Intent intent = new Intent(LoginRegisterActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        } else /*if (userType.equals("driver"))*/ {
+            Intent intent = new Intent(LoginRegisterActivity.this, RegisterDriverActivity.class);
+            startActivity(intent);
+        }
     }
 }

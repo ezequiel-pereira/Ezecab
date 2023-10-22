@@ -1,4 +1,4 @@
-package com.ezedev.ezecab;
+package com.ezedev.ezecab.activities.passenger;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,15 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ezedev.ezecab.R;
 import com.ezedev.ezecab.includes.MyToolbar;
-import com.ezedev.ezecab.model.User;
+import com.ezedev.ezecab.model.Passenger;
+import com.ezedev.ezecab.providers.AuthProvider;
+import com.ezedev.ezecab.providers.PassengerProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -26,10 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputEditText mTextInputEmail;
     TextInputEditText mTextInputPassword;
     Button mButtonRegister;
-    SharedPreferences mPref;
-
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
+    AuthProvider mAuthProvider;
+    PassengerProvider mPassengerProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +42,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         MyToolbar.show(this, "Regsitro de usuario", true);
 
-        mPref = getApplicationContext().getSharedPreferences("userType", MODE_PRIVATE);
-        String userType = mPref.getString("user", "");
-
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuthProvider = new AuthProvider();
+        mPassengerProvider = new PassengerProvider();
 
         mButtonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,8 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
                 registerUser();
             }
         });
-
-        Toast.makeText(this, "UserType: " + userType, Toast.LENGTH_SHORT).show();
     }
 
     private void registerUser() {
@@ -66,17 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (!name.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             if (password.length() >= 6) {
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            String id = mAuth.getCurrentUser().getUid();
-                            saveUser(id, name, email);
-                        } else {
-                            Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                register(name, email, password);
             } else {
                 Toast.makeText(this, "La contraseña debe tener al menos seis caracteres", Toast.LENGTH_SHORT).show();
             }
@@ -85,6 +69,35 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private void register(String name, String email, String password) {
+        mAuthProvider.register(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    Passenger passenger = new Passenger(id, name, email);
+                    create(passenger);
+                } else {
+                    Toast.makeText(RegisterActivity.this, "No se pudo registrar el usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    void create(Passenger passenger) {
+        mPassengerProvider.create(passenger).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    
+                } else {
+                    Toast.makeText(RegisterActivity.this, "No se pudo registar el usuario", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /*
     private void saveUser(String id, String name, String email) {
         String  userType = mPref.getString("user", "");
 
@@ -115,5 +128,5 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 }
