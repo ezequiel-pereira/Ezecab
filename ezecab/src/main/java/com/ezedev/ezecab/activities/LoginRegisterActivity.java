@@ -57,7 +57,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
     }
 
     private void goToRegister() {
-        String userType = mPref.getString("userType", "");
+        String userType = mPref.getString("user", "");
 
         if (userType.equals("client")) {
             Intent intent = new Intent(LoginRegisterActivity.this, RegisterActivity.class);

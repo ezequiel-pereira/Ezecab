@@ -69,7 +69,7 @@
                 android:id="@+id/textInputCarBrand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Msrca del vehiculo"
+                android:hint="Marca del vehículo"
                 android:inputType="text">
 
             </com.google.android.material.textfield.TextInputEditText>

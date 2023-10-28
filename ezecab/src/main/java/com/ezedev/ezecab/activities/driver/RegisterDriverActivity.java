@@ -3,6 +3,7 @@ package com.ezedev.ezecab.activities.driver;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -94,7 +95,10 @@ public class RegisterDriverActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-
+                    Intent intent = new Intent(RegisterDriverActivity.this, DriverMapActivity.class);
+                    //Evitar que el usuaro vuelva al formulario
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(RegisterDriverActivity.this, "No se pudo registar el usuario", Toast.LENGTH_SHORT).show();
                 }

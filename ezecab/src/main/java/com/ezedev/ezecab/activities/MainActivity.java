@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.ezedev.ezecab.R;
+import com.ezedev.ezecab.activities.driver.DriverMapActivity;
+import com.ezedev.ezecab.activities.passenger.PassengerMapActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +48,24 @@ public class MainActivity extends AppCompatActivity {
                 goToLoginregister();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            String userType = mPref.getString("user", "");
+
+            if (userType.equals("driver")) {
+                Intent intent = new Intent(MainActivity.this, DriverMapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(MainActivity.this, PassengerMapActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
     }
 
     private void goToLoginregister() {
