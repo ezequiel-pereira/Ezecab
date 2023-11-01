@@ -6,7 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.driver.DriverMapActivity">
 
-    <TextView
+    <include layout="@layout/action_bar_toolbar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/driver_map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <!--<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Mapa del conductor"/>
@@ -15,6 +23,6 @@
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"/>
+        android:text="Cerrar sesión"/>-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
