@@ -27,6 +27,9 @@ import com.ezedev.ezecab.R;
 import com.ezedev.ezecab.activities.MainActivity;
 import com.ezedev.ezecab.includes.MyToolbar;
 import com.ezedev.ezecab.providers.AuthProvider;
+import com.ezedev.ezecab.providers.GeoFireProvider;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -41,12 +44,18 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     //Button mButtonLogout;
-    AuthProvider mAuthProvider;
+    private AuthProvider mAuthProvider;
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
+    private GeoFireProvider mGeoFireProvider;
     private LocationRequest mlocationRequest;
     private FusedLocationProviderClient mFusedLocation;
     private final static int LOCATION_REQUEST_CODE = 1;
@@ -54,13 +63,16 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private Marker mMarker;
 
     private Button mBtnConnect;
-    private Boolean mConnected;
+    private boolean mConnected;
+    private LatLng mCurrentLatLng;
 
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
             for (Location location : locationResult.getLocations()) {
                 if (getApplicationContext() != null) {
+
+                    mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                     if (mMarker != null) {
                         mMarker.remove();
@@ -78,10 +90,16 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     .zoom(15f)
                                     .build()
                     ));
+                    updateLocation();
                 }
             }
         }
     };
+
+    private void updateLocation() {
+        if (mAuthProvider.sessionExists() && mCurrentLatLng != null)
+            mGeoFireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +110,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         //mButtonLogout = findViewById(R.id.btnLogout);
         mAuthProvider = new AuthProvider();
+        mGeoFireProvider = new GeoFireProvider();
         /*mButtonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,12 +139,18 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     private void disconnect() {
-        mBtnConnect.setText("Conectar");
-        mConnected = false;
-        if (mFusedLocation != null){
+
+        if (mFusedLocation != null) {
             mFusedLocation.removeLocationUpdates(mLocationCallback);
+            mBtnConnect.setText("Conectar");
+            mConnected = false;
+        }
+        if (mAuthProvider.sessionExists()) {
+            mGeoFireProvider.removeLocation(mAuthProvider.getId());
         }
     }
+
+
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
@@ -138,8 +163,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         mlocationRequest.setFastestInterval(1000);
         mlocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mlocationRequest.setSmallestDisplacement(5);
-
-        startLocation();
     }
 
     @Override
@@ -225,6 +248,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     void logout() {
+        disconnect();
         mAuthProvider.logout();
         Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
         startActivity(intent);
