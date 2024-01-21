@@ -49,8 +49,10 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
     private LocationRequest mlocationRequest;
     private FusedLocationProviderClient mFusedLocation;
     private Marker mMarker;
+    private LatLng mCurrentLatLng;
+    private final List<Marker> mDriversMarkers = new ArrayList<>();
 
-    private boolean firstTime;
+    private boolean firstTime = true;
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -60,6 +62,8 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                     if (mMarker != null) {
                         mMarker.remove();
                     }
+
+                    mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                     mMarker = mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -74,16 +78,21 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                                     .build()
                     ));
 
+                    updateLocation();
+
                     if (firstTime) {
-                        getActiveDrivers();
                         firstTime = false;
+                        getActiveDrivers();
                     }
                 }
             }
         }
     };
-    private LatLng mCurrentLatLng;
-    private final List<Marker> mDriversMarkers = new ArrayList<>();
+
+    private void updateLocation() {
+        if (mAuthProvider.sessionExists() && mCurrentLatLng != null)
+            mGeoFireProvider.saveLocation(mAuthProvider.getId(), mCurrentLatLng);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +101,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
         //mButtonLogout = findViewById(R.id.btnLogout);
         mAuthProvider = new AuthProvider();
+        mGeoFireProvider = new GeoFireProvider();
         /*mButtonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
