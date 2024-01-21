@@ -76,6 +76,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
                     if (firstTime) {
                         getActiveDrivers();
+                        firstTime = false;
                     }
                 }
             }
