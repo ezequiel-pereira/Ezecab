@@ -16,11 +16,11 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -30,6 +30,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/place_autocomplete_origin"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -44,11 +45,18 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/place_autocomplete_destination"
+                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </androidx.cardview.widget.CardView>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_pin_blue" />
 
     <!--<TextView
         android:layout_width="match_parent"
