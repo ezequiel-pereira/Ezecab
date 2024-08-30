@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.ezedev.ezecab.R;
-import com.ezedev.ezecab.includes.MyToolbar;
 import com.ezedev.ezecab.providers.AuthProvider;
 import com.ezedev.ezecab.providers.GeoFireProvider;
 import com.firebase.geofire.GeoLocation;
@@ -41,10 +40,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.database.DatabaseError;
+import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,6 +87,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                     if (firstTime) {
                         firstTime = false;
                         getActiveDrivers();
+                        limitAutocompleteSearchResults();
                     }
                 }
             }
@@ -102,7 +104,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passenger_map);
 
-        MyToolbar.show(this, "Pasajero", false);
+        //MyToolbar.show(this, "Pasajero", false);
 
         //mButtonLogout = findViewById(R.id.btnLogout);
         mAuthProvider = new AuthProvider();
@@ -127,6 +129,12 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
         mPlaces = Places.createClient(this);
 
+        instanceAutocompleteOrigin();
+        instanceAutocompleteDestination();
+        onCameraMove();
+    }
+
+    private void instanceAutocompleteOrigin() {
         mAutoCompleteOrigin = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_origin);
         mAutoCompleteOrigin.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
         mAutoCompleteOrigin.setHint("Desde...");
@@ -144,7 +152,9 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                 Log.d("PLACE", "Lng " + mOriginLatLng.longitude);
             }
         });
+    }
 
+    private void instanceAutocompleteDestination() {
         mAutoCompleteDestiantion = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.place_autocomplete_destination);
         mAutoCompleteDestiantion.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.LAT_LNG, Place.Field.NAME));
         mAutoCompleteDestiantion.setHint("Hacia...");
@@ -162,7 +172,9 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                 Log.d("PLACE", "Lng " + mDestinationLatLng.longitude);
             }
         });
+    }
 
+    private void onCameraMove() {
         mCameraListener = new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -180,6 +192,15 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                 }
             }
         };
+    }
+
+    private void limitAutocompleteSearchResults() {
+        LatLng northSide = SphericalUtil.computeOffset(mCurrentLatLng, 5000, 0);
+        LatLng southSide = SphericalUtil.computeOffset(mCurrentLatLng, 5000, 180);
+        mAutoCompleteOrigin.setCountry("ARG");
+        mAutoCompleteOrigin.setLocationBias(RectangularBounds.newInstance(southSide, northSide));
+        mAutoCompleteDestiantion.setCountry("ARG");
+        mAutoCompleteDestiantion.setLocationBias(RectangularBounds.newInstance(southSide, northSide));
     }
 
     private void getActiveDrivers() {

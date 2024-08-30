@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".activities.passenger.PassengerMapActivity">
 
-    <include layout="@layout/action_bar_toolbar" />
+    <!--<include layout="@layout/action_bar_toolbar" />-->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/passenger_map"
