@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Origen: "
-                android:textSize="16dp"/>
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/textViewOriginContent"
@@ -54,13 +54,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Destino: "
-                android:textSize="16dp"/>
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/textViewDestinationContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Destino: " />
+                android:text="Destino... " />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewTimeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tiempo: "
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/textViewTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewDistanceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distancia "
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/textViewDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 km" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
@@ -68,10 +119,10 @@
             android:id="@+id/btnRequestDriverConfirmation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Confirmar"
+            android:layout_margin="20dp"
             android:background="@color/colorPrimary"
-            android:textColor="@color/white"
-            android:layout_margin="20dp"/>
+            android:text="Confirmar"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

@@ -148,6 +148,8 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
             Intent intent = new Intent(PassengerMapActivity.this, RequestDriverActivity.class);
             intent.putExtra("origin", mOriginLatLng);
             intent.putExtra("destination", mDestinationLatLng);
+            intent.putExtra("originText", mOrigin);
+            intent.putExtra("destinationText", mDestination);
             startActivity(intent);
         } else  {
             Toast.makeText(this, "Debe seleccionar origen y destino", Toast.LENGTH_SHORT).show();

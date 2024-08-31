@@ -1,7 +1,9 @@
 package com.ezedev.ezecab.activities.passenger;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -11,21 +13,44 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.ezedev.ezecab.R;
+import com.ezedev.ezecab.providers.DirectionsProvider;
+import com.ezedev.ezecab.utils.GeoDecode;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.JointType;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RequestDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
-
     private LatLng mOrigin;
     private LatLng mDestination;
+    private DirectionsProvider mDirectionsProvider;
+    private List<LatLng> mPolylineList;
+    private PolylineOptions mPolylineOptions;
+    private TextView mTexViewOrigin;
+    private TextView mTexViewDestination;
+    private TextView mTexViewTime;
+    private TextView mTexViewDistance;
+    private String originText;
+    private String destinationText;
+    private String timeText;
+    private String distanceText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +66,64 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.passenger_map);
         mMapFragment.getMapAsync(this);
 
+        mTexViewOrigin = findViewById(R.id.textViewOriginContent);
+        mTexViewDestination = findViewById(R.id.textViewDestinationContent);
+        mTexViewTime = findViewById(R.id.textViewTime);
+        mTexViewDistance = findViewById(R.id.textViewDistance);
+
+        mDirectionsProvider = new DirectionsProvider(RequestDriverActivity.this);
+
         mOrigin = getIntent().getExtras().getParcelable("origin");
         mDestination = getIntent().getExtras().getParcelable("destination");
+
+        originText = getIntent().getStringExtra("originText");
+        destinationText = getIntent().getStringExtra("destinationText");
+        mTexViewOrigin.setText(originText);
+        mTexViewDestination.setText(destinationText);
+    }
+
+    private void drawRoute() {
+        mDirectionsProvider.getDirections(mOrigin, mDestination).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+                    JSONObject json = new JSONObject(response.body());
+                    JSONArray array = json.getJSONArray("routes");
+                    JSONObject route = array.getJSONObject(0);
+                    JSONObject polyline = route.getJSONObject("overview_polyline");
+                    String points = polyline.getString("points");
+                    mPolylineList = GeoDecode.decode(points);
+                    mPolylineOptions = new PolylineOptions();
+                    mPolylineOptions.color(Color.DKGRAY);
+                    mPolylineOptions.width(8f);
+                    mPolylineOptions.startCap(new SquareCap());
+                    mPolylineOptions.jointType(JointType.ROUND);
+                    mPolylineOptions.addAll(mPolylineList);
+                    mMap.addPolyline(mPolylineOptions);
+
+                    JSONArray legs = route.getJSONArray("legs");
+                    Log.d("Log legs", legs.toString());
+                    JSONObject leg = legs.getJSONObject(0);
+                    Log.d("Log leg", leg.toString());
+                    JSONObject distance = leg.getJSONObject("distance");
+                    Log.d("Log distance", distance.toString());
+                    JSONObject duration = leg.getJSONObject("duration");
+                    Log.d("Log duration", duration.toString());
+                    Log.d("Log text", duration.getString("text"));
+                    timeText = duration.getString("text");
+                    distanceText = distance.getString("text");
+                    mTexViewTime.setText(timeText);
+                    mTexViewDistance.setText(distanceText);
+                } catch (Exception exception) {
+                    Log.d("Error", exception.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override
@@ -53,8 +134,9 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
         mMap.addMarker(new MarkerOptions().position(mOrigin));
         mMap.addMarker(new MarkerOptions().position(mDestination));
 
-        centerMapCameraOnRoute();
+        //centerMapCameraOnRoute();
 
+        drawRoute();
         /*mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
                         .target(mOrigin)

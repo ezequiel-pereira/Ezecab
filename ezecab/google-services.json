@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "207885232296",
+    "firebase_url": "https://ezecab-dd6c2-default-rtdb.firebaseio.com",
     "project_id": "ezecab-dd6c2",
     "storage_bucket": "ezecab-dd6c2.appspot.com"
   },
@@ -15,7 +16,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAjOQSysuWzl8eNv7XDLj2_wKyTgkVhJRI"
+          "current_key": "AIzaSyCyvRUKJck1CsWZSyrTl0ljitEL3PmiO-g"
         }
       ],
       "services": {
