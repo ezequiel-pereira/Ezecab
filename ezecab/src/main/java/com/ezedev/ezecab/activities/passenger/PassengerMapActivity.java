@@ -2,6 +2,7 @@ package com.ezedev.ezecab.activities.passenger;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -53,7 +55,6 @@ import java.util.List;
 
 public class PassengerMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     private final static int LOCATION_REQUEST_CODE = 1;
-    Button mButtonLogout;
     private AuthProvider mAuthProvider;
     private GeoFireProvider mGeoFireProvider;
     private GoogleMap mMap;
@@ -72,6 +73,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
     private String mDestination;
     private LatLng mDestinationLatLng;
     private GoogleMap.OnCameraIdleListener mCameraListener;
+    private Button mButtonRequestDriver;
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -106,7 +108,6 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
         //MyToolbar.show(this, "Pasajero", false);
 
-        //mButtonLogout = findViewById(R.id.btnLogout);
         mAuthProvider = new AuthProvider();
         mGeoFireProvider = new GeoFireProvider();
         /*mButtonLogout.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +123,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
         mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.passenger_map);
         mMapFragment.getMapAsync(this);
+        mButtonRequestDriver = findViewById(R.id.btn_request_driver);
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getResources().getString(R.string.google_maps_apikey));
@@ -132,6 +134,24 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
         instanceAutocompleteOrigin();
         instanceAutocompleteDestination();
         onCameraMove();
+
+        mButtonRequestDriver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestDriver();
+            }
+        });
+    }
+
+    private void requestDriver() {
+        if(mOriginLatLng != null && mDestinationLatLng != null) {
+            Intent intent = new Intent(PassengerMapActivity.this, RequestDriverActivity.class);
+            intent.putExtra("origin", mOriginLatLng);
+            intent.putExtra("destination", mDestinationLatLng);
+            startActivity(intent);
+        } else  {
+            Toast.makeText(this, "Debe seleccionar origen y destino", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void instanceAutocompleteOrigin() {

@@ -58,15 +58,15 @@
         android:layout_gravity="center"
         android:src="@drawable/icon_pin_blue" />
 
-    <!--<TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mapa del pasajero"/>
-
     <Button
-        android:id="@+id/btnLogout"
+        android:id="@+id/btn_request_driver"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"/>-->
+        android:layout_gravity="bottom"
+        android:layout_margin="20dp"
+        android:background="@color/colorPrimary"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="Solicitar viaje"
+        android:textColor="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
