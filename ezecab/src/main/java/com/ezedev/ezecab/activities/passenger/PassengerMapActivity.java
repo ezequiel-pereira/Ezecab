@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import com.ezedev.ezecab.R;
 import com.ezedev.ezecab.providers.AuthProvider;
 import com.ezedev.ezecab.providers.GeoFireProvider;
+import com.ezedev.ezecab.providers.InstallationTokenProvider;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.common.api.Status;
@@ -74,6 +75,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
     private LatLng mDestinationLatLng;
     private GoogleMap.OnCameraIdleListener mCameraListener;
     private Button mButtonRequestDriver;
+
     LocationCallback mLocationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(@NonNull LocationResult locationResult) {
@@ -83,7 +85,8 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                         mMarker.remove();
                     }
                     mCurrentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Vos").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_my_location)));
+                    mMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Vos"));
+                    //mMarker.setDraggable(true);
                     mMap.moveCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(15f).build()));
                     updateLocation();
                     if (firstTime) {
@@ -110,6 +113,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
 
         mAuthProvider = new AuthProvider();
         mGeoFireProvider = new GeoFireProvider();
+        tokenProvider = new InstallationTokenProvider();
         /*mButtonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,17 +145,19 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
                 requestDriver();
             }
         });
+
+        getInstallationToken();
     }
 
     private void requestDriver() {
-        if(mOriginLatLng != null && mDestinationLatLng != null) {
-            Intent intent = new Intent(PassengerMapActivity.this, RequestDriverActivity.class);
+        if (mOriginLatLng != null && mDestinationLatLng != null) {
+            Intent intent = new Intent(PassengerMapActivity.this, RequestDetailsActivity.class);
             intent.putExtra("origin", mOriginLatLng);
             intent.putExtra("destination", mDestinationLatLng);
             intent.putExtra("originText", mOrigin);
             intent.putExtra("destinationText", mDestination);
             startActivity(intent);
-        } else  {
+        } else {
             Toast.makeText(this, "Debe seleccionar origen y destino", Toast.LENGTH_SHORT).show();
         }
     }
@@ -226,7 +232,7 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
     }
 
     private void getActiveDrivers() {
-        mGeoFireProvider.getActiveDrivers(mCurrentLatLng).addGeoQueryEventListener(new GeoQueryEventListener() {
+        mGeoFireProvider.getActiveDrivers(mCurrentLatLng, 5.0).addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 for (Marker marker : mDriversMarkers) {
@@ -330,5 +336,10 @@ public class PassengerMapActivity extends AppCompatActivity implements OnMapRead
         } else {
             mFusedLocation.requestLocationUpdates(mlocationRequest, mLocationCallback, Looper.myLooper());
         }
+    }
+
+    InstallationTokenProvider tokenProvider;
+    void getInstallationToken() {
+        tokenProvider.create(mAuthProvider.getId());
     }
 }

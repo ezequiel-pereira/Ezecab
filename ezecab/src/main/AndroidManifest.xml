@@ -16,8 +16,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestApp"
         tools:targetApi="31">
+
+        <service
+            android:name=".services.FCMService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".activities.passenger.RequestDriverActivity"
+            android:name=".activities.passenger.RequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.passenger.RequestDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.passenger.PassengerMapActivity"

@@ -1,8 +1,10 @@
 package com.ezedev.ezecab.activities.passenger;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -35,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RequestDriverActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class RequestDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private SupportMapFragment mMapFragment;
     private LatLng mOrigin;
@@ -51,6 +53,7 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
     private String destinationText;
     private String timeText;
     private String distanceText;
+    private View mRequestButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +73,9 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
         mTexViewDestination = findViewById(R.id.textViewDestinationContent);
         mTexViewTime = findViewById(R.id.textViewTime);
         mTexViewDistance = findViewById(R.id.textViewDistance);
+        mRequestButton = findViewById(R.id.btnRequest);
 
-        mDirectionsProvider = new DirectionsProvider(RequestDriverActivity.this);
+        mDirectionsProvider = new DirectionsProvider(RequestDetailsActivity.this);
 
         mOrigin = getIntent().getExtras().getParcelable("origin");
         mDestination = getIntent().getExtras().getParcelable("destination");
@@ -80,6 +84,21 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
         destinationText = getIntent().getStringExtra("destinationText");
         mTexViewOrigin.setText(originText);
         mTexViewDestination.setText(destinationText);
+
+        mRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requstButton();
+            }
+        });
+    }
+
+    private void requstButton() {
+        Intent intent = new Intent(RequestDetailsActivity.this, RequestActivity.class);
+        intent.putExtra("origin", mOrigin);
+        //intent.putExtra("destination", mDestination);
+        startActivity(intent);
+        finish();
     }
 
     private void drawRoute() {
@@ -134,7 +153,7 @@ public class RequestDriverActivity extends AppCompatActivity implements OnMapRea
         mMap.addMarker(new MarkerOptions().position(mOrigin));
         mMap.addMarker(new MarkerOptions().position(mDestination));
 
-        //centerMapCameraOnRoute();
+        centerMapCameraOnRoute();
 
         drawRoute();
         /*mMap.animateCamera(CameraUpdateFactory.newCameraPosition(

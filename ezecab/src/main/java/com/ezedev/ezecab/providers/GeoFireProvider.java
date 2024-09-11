@@ -24,8 +24,8 @@ public class GeoFireProvider {
         mGeoFire.removeLocation(driverId);
     }
 
-    public GeoQuery getActiveDrivers(LatLng latLng) {
-        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 5);
+    public GeoQuery getActiveDrivers(LatLng latLng, Double radius) {
+        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), radius);
         geoQuery.removeAllListeners();
         return geoQuery;
     }
